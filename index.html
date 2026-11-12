@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0b0d">
+<title>NEXTMUSICPTY | Música que mueve Panamá</title>
+<style>
+:root{--bg:#09090b;--panel:#131317;--panel2:#1b1b21;--line:#292932;--text:#f7f7f8;--muted:#a3a3ad;--orange:#ff650d;--yellow:#ffad28;--danger:#ef4444}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#3a1709 0,transparent 34%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.topbar{position:sticky;top:0;z-index:20;background:rgba(9,9,11,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:11px;cursor:pointer}.brand-mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--orange),var(--yellow));display:grid;place-items:center;font-weight:1000;font-size:22px;box-shadow:0 7px 24px #ff650d40}.brand-name{font-weight:950;letter-spacing:1.1px;font-size:18px}.brand-name span{color:var(--orange)}.nav-actions{display:flex;gap:8px}.nav-btn{border:1px solid transparent;background:transparent;color:var(--muted);padding:10px 15px;border-radius:10px;font-weight:700}.nav-btn:hover,.nav-btn.active{color:white;background:var(--panel2);border-color:var(--line)}
+main{max-width:1180px;margin:auto;padding:34px 22px 70px}.hero{position:relative;overflow:hidden;border:1px solid #56301d;border-radius:25px;padding:42px;background:linear-gradient(110deg,#1c100b 0%,#171216 54%,#111116 100%);margin-bottom:30px}.hero:after{content:"";position:absolute;width:310px;height:310px;border-radius:50%;right:5%;top:-160px;background:#ff650d25;filter:blur(10px)}.eyebrow{color:var(--yellow);font-size:12px;font-weight:900;letter-spacing:2px;text-transform:uppercase}.hero h1{font-size:clamp(32px,5vw,58px);line-height:1.02;max-width:650px;margin:12px 0}.hero h1 span{color:var(--orange)}.hero p{color:#c2b9b5;max-width:570px;line-height:1.65;margin:0}.hero-tag{display:inline-flex;margin-top:22px;border:1px solid #744020;background:#2b170d;color:#ffd3b4;border-radius:99px;padding:8px 13px;font-size:12px;font-weight:800}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:28px 0 18px;flex-wrap:wrap}.section-title{font-size:23px;font-weight:900;margin:0}.section-title span{color:var(--orange)}.search{width:min(100%,360px);position:relative}.search input{width:100%;background:var(--panel);border:1px solid var(--line);color:white;padding:13px 16px 13px 42px;border-radius:13px;outline:none}.search input:focus,.field input:focus{border-color:var(--orange)}.search:before{content:"⌕";position:absolute;left:15px;top:6px;color:var(--muted);font-size:25px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:19px}.mix-card{background:linear-gradient(180deg,#17171c,#101014);border:1px solid var(--line);border-radius:17px;overflow:hidden;transition:.22s;display:flex;flex-direction:column;min-width:0}.mix-card:hover{transform:translateY(-4px);border-color:#a74716;box-shadow:0 12px 30px #0007}.cover-wrap{position:relative;aspect-ratio:1/1;background:#202027;overflow:hidden}.cover{width:100%;height:100%;object-fit:cover;display:block}.cover-placeholder{height:100%;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,#65300f,#21130d 65%,#111);font-size:52px;font-weight:1000;color:#ff8a37}.mix-content{padding:15px;display:flex;flex-direction:column;gap:7px;flex:1}.mix-title{font-weight:850;font-size:16px;line-height:1.3;overflow-wrap:anywhere}.mix-dj{font-size:13px;color:var(--muted)}.mix-meta{font-size:11px;color:#d8874c;margin-top:auto;padding-top:9px}.download{display:block;text-decoration:none;text-align:center;color:#fff;background:linear-gradient(100deg,#f45b0a,#ff8b17);padding:13px;font-size:12px;letter-spacing:.6px;font-weight:950}.download:hover{filter:brightness(1.12)}.empty{grid-column:1/-1;text-align:center;padding:55px 20px;background:var(--panel);border:1px dashed #444;border-radius:17px;color:var(--muted)}.empty strong{display:block;color:white;font-size:18px;margin-bottom:7px}
+.section{display:none}.section.active{display:block}.admin-wrap{max-width:850px;margin:0 auto}.admin-card{background:var(--panel);border:1px solid var(--line);border-radius:19px;padding:24px;margin-bottom:18px}.admin-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}.admin-head h2{margin:0;font-size:22px}.admin-head h2 span{color:var(--orange)}.field{margin-bottom:15px}.field label{display:block;font-size:13px;font-weight:800;color:#e4e4e7;margin-bottom:7px}.field input{width:100%;padding:13px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;color:white;outline:none}.hint{color:var(--muted);font-size:12px;line-height:1.5;margin-top:6px}.btn{border:0;border-radius:11px;padding:12px 16px;font-weight:900}.btn-primary{background:linear-gradient(100deg,#f45b0a,#ff8b17);color:white}.btn-muted{background:var(--panel2);border:1px solid var(--line);color:white}.btn-danger{background:#401919;border:1px solid #7f2929;color:#ffb4b4;padding:8px 11px;border-radius:9px;font-size:12px;font-weight:800}.btn-row{display:flex;gap:9px;flex-wrap:wrap}.full{width:100%}.login{max-width:430px;margin:60px auto}.login h2{margin:0 0 8px}.login p{color:var(--muted);font-size:13px}.error{color:#ff7777;font-size:13px;display:none;margin:0 0 12px}.admin-list{display:grid;gap:10px}.admin-item{display:flex;align-items:center;gap:12px;padding:10px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}.admin-thumb{width:55px;height:55px;object-fit:cover;border-radius:8px;background:#333;flex:none}.admin-info{min-width:0;flex:1}.admin-info strong,.admin-info small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.admin-info small{color:var(--muted);margin-top:4px}.notice{border:1px solid #67411d;background:#21170e;color:#e9c6a7;padding:13px;border-radius:11px;font-size:12px;line-height:1.55;margin-bottom:16px}
+footer{border-top:1px solid var(--line);padding:24px 18px;text-align:center;color:var(--muted);font-size:12px}footer button{background:none;border:0;color:#777;font-size:12px;text-decoration:underline;margin-left:7px}
+@media(max-width:650px){.nav{padding:11px 14px}.brand-name{font-size:15px}.brand-mark{width:37px;height:37px}.nav-btn{padding:9px 10px;font-size:12px}.nav-actions{gap:3px}main{padding:20px 14px 50px}.hero{padding:28px 22px;border-radius:19px}.toolbar{align-items:stretch}.search{width:100%}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.mix-content{padding:11px}.mix-title{font-size:14px}.download{padding:12px 7px;font-size:10px}.admin-card{padding:17px}.admin-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:360px){.grid{grid-template-columns:1fr}.nav{gap:7px}.brand-name{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="nav">
+  <div class="brand" onclick="showSection('catalog')" title="NEXTMUSICPTY"><div class="brand-mark">N</div><div class="brand-name">NEXT<span>MUSIC</span>PTY</div></div>
+  <div class="nav-actions"><button class="nav-btn active" id="nav-catalog" onclick="showSection('catalog')">Mixes</button><button class="nav-btn" id="nav-djs" onclick="showSection('djs')">DJs</button></div>
+</div></header>
+<main>
+<section class="section active" id="catalog-section">
+  <div class="hero"><div class="eyebrow">El sonido de Panamá</div><h1>Tu música.<br><span>Tu movimiento.</span></h1><p>Descubre mixes, sesiones y sonidos de DJs. Encuentra tu próximo favorito y accede directamente a su enlace de descarga.</p><div class="hero-tag">NEXTMUSICPTY · PORTAL MUSICAL</div></div>
+  <div class="toolbar"><h2 class="section-title">Últimos <span>mixes</span></h2><div class="search"><input id="searchInput" type="search" placeholder="Buscar por mix o DJ..." oninput="renderCatalog()"></div></div>
+  <div class="grid" id="mixesGrid"></div>
+</section>
+<section class="section" id="djs-section"><div class="hero"><div class="eyebrow">Talento detrás de la música</div><h1>Conoce a los <span>DJs.</span></h1><p>Explora los mixes publicados y descubre a sus creadores. El directorio de DJs se irá ampliando.</p></div><div class="empty"><strong>Directorio de DJs</strong>Próximamente más perfiles y novedades.</div></section>
+<section class="section" id="login-section"><div class="admin-card login"><h2>Acceso privado</h2><p>Ingresa tu contraseña para administrar el catálogo.</p><form onsubmit="login(event)"><div class="field"><label>Contraseña</label><input id="password" type="password" placeholder="Tu contraseña" required></div><div class="error" id="loginError">Contraseña incorrecta.</div><button class="btn btn-primary full">ENTRAR AL ADMIN</button><button type="button" class="btn btn-muted full" style="margin-top:9px" onclick="showSection('catalog')">Volver al portal</button></form></div></section>
+<section class="section" id="admin-section"><div class="admin-wrap">
+  <div class="admin-card"><div class="admin-head"><h2>Panel <span>administrador</span></h2><button class="btn btn-muted" onclick="logout()">Cerrar sesión</button></div>
+    <div class="notice"><strong>Importante:</strong> esta versión guarda el catálogo en el navegador donde administras la página. Para que los cambios y portadas aparezcan a todos los visitantes al publicar la web en internet, necesitarás conectar un servicio de base de datos/almacenamiento o actualizar el archivo web publicado.</div>
+    <form id="mixForm" onsubmit="publishMix(event)">
+      <div class="field"><label for="mixTitle">Nombre del mix *</label><input id="mixTitle" placeholder="Ej. Plenas tras plenas Vol. 4" required maxlength="100"></div>
+      <div class="field"><label for="djName">Nombre del DJ *</label><input id="djName" placeholder="Ej. DJ Angel C3" required maxlength="70"></div>
+      <div class="field"><label for="downloadLink">Enlace externo de descarga *</label><input id="downloadLink" type="url" placeholder="https://..." required><div class="hint">Pega un enlace público de Google Drive, Dropbox, MediaFire u otro servicio. Comprueba que los visitantes tengan permiso para abrirlo.</div></div>
+      <div class="field"><label for="coverFile">Portada (opcional)</label><input id="coverFile" type="file" accept="image/png,image/jpeg,image/webp"><div class="hint">Usa una imagen JPG, PNG o WEBP ligera para evitar llenar el almacenamiento del navegador.</div></div>
+      <div class="btn-row"><button class="btn btn-primary" type="submit" id="publishBtn">PUBLICAR MIX</button><button class="btn btn-muted" type="button" onclick="resetForm()">Limpiar campos</button></div>
+    </form>
+  </div>
+  <div class="admin-card"><div class="admin-head"><h2>Mixes <span>publicados</span></h2><span id="mixCount" class="hint"></span></div><div class="admin-list" id="adminList"></div></div>
+  <div class="admin-card"><h3 style="margin-top:0">Respaldo del catálogo</h3><p class="hint">Guarda una copia de tus publicaciones o restaura un respaldo en este navegador.</p><div class="btn-row"><button class="btn btn-muted" onclick="exportBackup()">Descargar respaldo JSON</button><label class="btn btn-muted" for="importFile">Importar respaldo</label><input id="importFile" type="file" accept="application/json" hidden onchange="importBackup(event)"></div></div>
+</div></section>
+</main>
+<footer>© <span id="year"></span> NEXTMUSICPTY · Todos los derechos reservados.<button onclick="openAdmin()" title="Acceso administrador">Acceso admin</button></footer>
+<script>
+const ADMIN_PASSWORD = "admin2026"; // Cambia esta contraseña antes de publicar.
+const STORAGE_KEY = "nextmusicpty_catalog_v2";
+const DEFAULT_COVER = "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=700&auto=format&fit=crop&q=80";
+let mixes = loadMixes(), authenticated = sessionStorage.getItem("nextmusicpty_auth") === "yes", editingId = null;
+document.getElementById("year").textContent = new Date().getFullYear();
+function loadMixes(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return []}}
+function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(mixes));return true}catch(e){alert("No se pudo guardar. La portada puede ser demasiado pesada; usa una imagen más pequeña.");return false}}
+function showSection(name){
+ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+ const el=document.getElementById(name+"-section");if(el)el.classList.add("active");
+ const nav=document.getElementById("nav-"+name);if(nav)nav.classList.add("active");
+ if(name==="catalog")renderCatalog();if(name==="admin")renderAdmin();
+}
+function openAdmin(){if(authenticated){showSection("admin")}else{showSection("login");document.getElementById("password").value="";document.getElementById("loginError").style.display="none"}}
+function login(e){e.preventDefault();if(document.getElementById("password").value===ADMIN_PASSWORD){authenticated=true;sessionStorage.setItem("nextmusicpty_auth","yes");showSection("admin")}else{document.getElementById("loginError").style.display="block"}}
+function logout(){authenticated=false;sessionStorage.removeItem("nextmusicpty_auth");resetForm();showSection("catalog")}
+function safeUrl(value){try{const u=new URL(value);return ["http:","https:"].includes(u.protocol)?u.href:"#"}catch(e){return "#"}}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderCatalog(){
+ const q=(document.getElementById("searchInput").value||"").toLowerCase().trim(),grid=document.getElementById("mixesGrid");
+ const found=mixes.filter(m=>(m.title+" "+m.dj).toLowerCase().includes(q));
+ if(!found.length){grid.innerHTML='<div class="empty"><strong>'+(mixes.length?'No encontramos resultados':'Todavía no hay mixes publicados')+'</strong>'+(mixes.length?'Prueba con otro nombre o DJ.':'Muy pronto encontrarás música aquí.')+'</div>';return}
+ grid.innerHTML=found.map(m=>`<article class="mix-card"><div class="cover-wrap">${m.cover?`<img class="cover" src="${escapeHtml(m.cover)}" alt="Portada de ${escapeHtml(m.title)}" loading="lazy">`:'<div class="cover-placeholder">N</div>'}</div><div class="mix-content"><div class="mix-title">${escapeHtml(m.title)}</div><div class="mix-dj">Por ${escapeHtml(m.dj)}</div><div class="mix-meta">NEXTMUSICPTY</div></div><a class="download" href="${escapeHtml(safeUrl(m.link))}" target="_blank" rel="noopener noreferrer">ABRIR ENLACE DE DESCARGA ↗</a></article>`).join("");
+}
+function publishMix(e){
+ e.preventDefault();if(!authenticated)return;
+ const title=document.getElementById("mixTitle").value.trim(),dj=document.getElementById("djName").value.trim(),link=safeUrl(document.getElementById("downloadLink").value.trim()),file=document.getElementById("coverFile").files[0];
+ if(link==="#"){alert("Introduce un enlace válido que empiece por https:// o http://");return}
+ const save=cover=>{
+  if(editingId){const m=mixes.find(x=>x.id===editingId);if(m)Object.assign(m,{title,dj,link,cover:cover||m.cover})}
+  else mixes.unshift({id:Date.now(),title,dj,link,cover:cover||""});
+  if(persist()){resetForm();renderAdmin();renderCatalog();alert(editingId?"Mix actualizado.":"Mix publicado en este navegador.")}
+ };
+ if(file){if(file.size>1.5*1024*1024){alert("La portada pesa más de 1.5 MB. Reduce su tamaño e inténtalo de nuevo.");return}const reader=new FileReader();reader.onload=ev=>save(ev.target.result);reader.readAsDataURL(file)}else save("");
+}
+function resetForm(){document.getElementById("mixForm").reset();editingId=null;document.getElementById("publishBtn").textContent="PUBLICAR MIX"}
+function renderAdmin(){
+ if(!authenticated){openAdmin();return}
+ const list=document.getElementById("adminList");document.getElementById("mixCount").textContent=mixes.length+" publicaciones";
+ if(!mixes.length){list.innerHTML='<div class="empty">Aún no has publicado ningún mix.</div>';return}
+ list.innerHTML=mixes.map(m=>`<div class="admin-item"><img class="admin-thumb" src="${escapeHtml(m.cover||DEFAULT_COVER)}" alt=""><div class="admin-info"><strong>${escapeHtml(m.title)}</strong><small>${escapeHtml(m.dj)} · <a style="color:#ff9b54" href="${escapeHtml(safeUrl(m.link))}" target="_blank" rel="noopener">Abrir enlace</a></small></div><button class="btn btn-muted" style="padding:8px 10px;font-size:12px" onclick="editMix(${Number(m.id)})">Editar</button><button class="btn-danger" onclick="deleteMix(${Number(m.id)})">Eliminar</button></div>`).join("");
+}
+function editMix(id){const m=mixes.find(x=>x.id===id);if(!m)return;editingId=id;document.getElementById("mixTitle").value=m.title;document.getElementById("djName").value=m.dj;document.getElementById("downloadLink").value=m.link;document.getElementById("publishBtn").textContent="GUARDAR CAMBIOS";window.scrollTo({top:0,behavior:"smooth"})}
+function deleteMix(id){if(!confirm("¿Eliminar este mix del catálogo de este navegador?"))return;mixes=mixes.filter(m=>m.id!==id);persist();renderAdmin();renderCatalog()}
+function exportBackup(){const blob=new Blob([JSON.stringify(mixes,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="nextmusicpty-respaldo.json";a.click();URL.revokeObjectURL(url)}
+function importBackup(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!Array.isArray(data)||!data.every(m=>m.title&&m.dj&&m.link))throw Error();if(!confirm("Esto reemplazará el catálogo actual de este navegador. ¿Continuar?"))return;mixes=data;if(persist()){renderAdmin();renderCatalog();alert("Respaldo importado.")}}catch(err){alert("El archivo no parece ser un respaldo válido de NEXTMUSICPTY.")}e.target.value=""};r.readAsText(file)}
+renderCatalog();
+if(location.hash==="#admin")openAdmin();
+</script>
+</body>
+</html>
