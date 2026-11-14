@@ -21,7 +21,7 @@ footer{border-top:1px solid var(--line);padding:24px 18px;text-align:center;colo
 </head>
 <body>
 <header class="topbar"><div class="nav">
-  <div class="brand" onclick="showSection('catalog')" title="NEXTMUSICPTY"><div class="brand-mark">N</div><div class="brand-name">NEXT<span>MUSIC</span>PTY</div></div>
+  <div class="brand" onclick="showSection('catalog')" ondblclick="openAdmin()" title="NEXTMUSICPTY"><div class="brand-mark">N</div><div class="brand-name">NEXT<span>MUSIC</span>PTY</div></div>
   <div class="nav-actions"><button class="nav-btn active" id="nav-catalog" onclick="showSection('catalog')">Mixes</button><button class="nav-btn" id="nav-djs" onclick="showSection('djs')">DJs</button></div>
 </div></header>
 <main>
@@ -47,57 +47,29 @@ footer{border-top:1px solid var(--line);padding:24px 18px;text-align:center;colo
   <div class="admin-card"><h3 style="margin-top:0">Respaldo del catálogo</h3><p class="hint">Guarda una copia de tus publicaciones o restaura un respaldo en este navegador.</p><div class="btn-row"><button class="btn btn-muted" onclick="exportBackup()">Descargar respaldo JSON</button><label class="btn btn-muted" for="importFile">Importar respaldo</label><input id="importFile" type="file" accept="application/json" hidden onchange="importBackup(event)"></div></div>
 </div></section>
 </main>
-<footer>© <span id="year"></span> NEXTMUSICPTY · Todos los derechos reservados.<button onclick="openAdmin()" title="Acceso administrador">Acceso admin</button></footer>
+<footer>© <span id="year"></span> NEXTMUSICPTY · Todos los derechos reservados.</footer>
 <script>
-const ADMIN_PASSWORD = "admin2026"; // Cambia esta contraseña antes de publicar.
-const STORAGE_KEY = "nextmusicpty_catalog_v2";
-const DEFAULT_COVER = "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=700&auto=format&fit=crop&q=80";
-let mixes = loadMixes(), authenticated = sessionStorage.getItem("nextmusicpty_auth") === "yes", editingId = null;
-document.getElementById("year").textContent = new Date().getFullYear();
-function loadMixes(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return []}}
-function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(mixes));return true}catch(e){alert("No se pudo guardar. La portada puede ser demasiado pesada; usa una imagen más pequeña.");return false}}
-function showSection(name){
- document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
- document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
- const el=document.getElementById(name+"-section");if(el)el.classList.add("active");
- const nav=document.getElementById("nav-"+name);if(nav)nav.classList.add("active");
- if(name==="catalog")renderCatalog();if(name==="admin")renderAdmin();
-}
-function openAdmin(){if(authenticated){showSection("admin")}else{showSection("login");document.getElementById("password").value="";document.getElementById("loginError").style.display="none"}}
-function login(e){e.preventDefault();if(document.getElementById("password").value===ADMIN_PASSWORD){authenticated=true;sessionStorage.setItem("nextmusicpty_auth","yes");showSection("admin")}else{document.getElementById("loginError").style.display="block"}}
-function logout(){authenticated=false;sessionStorage.removeItem("nextmusicpty_auth");resetForm();showSection("catalog")}
-function safeUrl(value){try{const u=new URL(value);return ["http:","https:"].includes(u.protocol)?u.href:"#"}catch(e){return "#"}}
-function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function renderCatalog(){
- const q=(document.getElementById("searchInput").value||"").toLowerCase().trim(),grid=document.getElementById("mixesGrid");
- const found=mixes.filter(m=>(m.title+" "+m.dj).toLowerCase().includes(q));
- if(!found.length){grid.innerHTML='<div class="empty"><strong>'+(mixes.length?'No encontramos resultados':'Todavía no hay mixes publicados')+'</strong>'+(mixes.length?'Prueba con otro nombre o DJ.':'Muy pronto encontrarás música aquí.')+'</div>';return}
- grid.innerHTML=found.map(m=>`<article class="mix-card"><div class="cover-wrap">${m.cover?`<img class="cover" src="${escapeHtml(m.cover)}" alt="Portada de ${escapeHtml(m.title)}" loading="lazy">`:'<div class="cover-placeholder">N</div>'}</div><div class="mix-content"><div class="mix-title">${escapeHtml(m.title)}</div><div class="mix-dj">Por ${escapeHtml(m.dj)}</div><div class="mix-meta">NEXTMUSICPTY</div></div><a class="download" href="${escapeHtml(safeUrl(m.link))}" target="_blank" rel="noopener noreferrer">ABRIR ENLACE DE DESCARGA ↗</a></article>`).join("");
-}
-function publishMix(e){
- e.preventDefault();if(!authenticated)return;
- const title=document.getElementById("mixTitle").value.trim(),dj=document.getElementById("djName").value.trim(),link=safeUrl(document.getElementById("downloadLink").value.trim()),file=document.getElementById("coverFile").files[0];
- if(link==="#"){alert("Introduce un enlace válido que empiece por https:// o http://");return}
- const save=cover=>{
-  if(editingId){const m=mixes.find(x=>x.id===editingId);if(m)Object.assign(m,{title,dj,link,cover:cover||m.cover})}
-  else mixes.unshift({id:Date.now(),title,dj,link,cover:cover||""});
-  if(persist()){resetForm();renderAdmin();renderCatalog();alert(editingId?"Mix actualizado.":"Mix publicado en este navegador.")}
- };
- if(file){if(file.size>1.5*1024*1024){alert("La portada pesa más de 1.5 MB. Reduce su tamaño e inténtalo de nuevo.");return}const reader=new FileReader();reader.onload=ev=>save(ev.target.result);reader.readAsDataURL(file)}else save("");
-}
+
+const API="/api";let mixes=[],authenticated=false,editingId=null;
+document.getElementById("year").textContent=new Date().getFullYear();
+async function api(path,options={}){const headers=new Headers(options.headers||{});if(authenticated)headers.set("Authorization","Bearer "+sessionStorage.getItem("nextmusicpty_token"));const r=await fetch(API+path,{...options,headers});const d=await r.json().catch(()=>({error:"Respuesta inválida"}));if(!r.ok)throw Error(d.error||"Error de conexión");return d}
+function showSection(name){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));const el=document.getElementById(name+"-section");if(el)el.classList.add("active");const nav=document.getElementById("nav-"+name);if(nav)nav.classList.add("active");if(name==="catalog")loadCatalog();if(name==="admin")renderAdmin()}
+function openAdmin(){authenticated=!!sessionStorage.getItem("nextmusicpty_token");if(authenticated)showSection("admin");else{showSection("login");document.getElementById("password").value="";document.getElementById("loginError").style.display="none"}}
+async function login(e){e.preventDefault();const b=document.querySelector("#login-section button[type=submit]");b.disabled=true;b.textContent="VERIFICANDO...";try{const d=await api("/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:document.getElementById("password").value})});sessionStorage.setItem("nextmusicpty_token",d.token);authenticated=true;document.getElementById("password").value="";showSection("admin")}catch(err){document.getElementById("loginError").textContent=err.message;document.getElementById("loginError").style.display="block"}finally{b.disabled=false;b.textContent="ENTRAR AL ADMIN"}}
+function logout(){authenticated=false;sessionStorage.removeItem("nextmusicpty_token");resetForm();showSection("catalog")}
+function safeUrl(v){try{const u=new URL(v);return ["http:","https:"].includes(u.protocol)?u.href:"#"}catch{return "#"}}
+function escapeHtml(s){return String(s??"").replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+async function loadCatalog(){const g=document.getElementById("mixesGrid");g.innerHTML='<div class="empty">Cargando mixes...</div>';try{mixes=await api("/mixes");renderCatalog()}catch(e){g.innerHTML='<div class="empty"><strong>No pudimos cargar los mixes</strong>'+escapeHtml(e.message)+'</div>'}}
+function renderCatalog(){const q=(document.getElementById("searchInput").value||"").toLowerCase().trim(),g=document.getElementById("mixesGrid"),found=mixes.filter(m=>(m.title+" "+m.dj).toLowerCase().includes(q));if(!found.length){g.innerHTML='<div class="empty"><strong>'+(mixes.length?'No encontramos resultados':'Todavía no hay mixes publicados')+'</strong>'+(mixes.length?'Prueba con otro nombre o DJ.':'Muy pronto encontrarás música aquí.')+'</div>';return}g.innerHTML=found.map(m=>`<article class="mix-card"><div class="cover-wrap">${m.cover?`<img class="cover" src="${escapeHtml(m.cover)}" alt="Portada de ${escapeHtml(m.title)}" loading="lazy">`:'<div class="cover-placeholder">N</div>'}</div><div class="mix-content"><div class="mix-title">${escapeHtml(m.title)}</div><div class="mix-dj">Por ${escapeHtml(m.dj)}</div><div class="mix-meta">NEXTMUSICPTY</div></div><a class="download" href="${escapeHtml(safeUrl(m.link))}" target="_blank" rel="noopener noreferrer">ABRIR ENLACE DE DESCARGA ↗</a></article>`).join("")}
+async function publishMix(e){e.preventDefault();if(!authenticated)return;const b=document.getElementById("publishBtn"),f=new FormData();f.set("title",document.getElementById("mixTitle").value.trim());f.set("dj",document.getElementById("djName").value.trim());f.set("link",document.getElementById("downloadLink").value.trim());const file=document.getElementById("coverFile").files[0];if(file)f.set("cover",file);const wasEdit=!!editingId;b.disabled=true;b.textContent="GUARDANDO...";try{if(editingId)await api("/mixes/"+editingId,{method:"PUT",body:f});else await api("/mixes",{method:"POST",body:f});resetForm();await loadCatalog();await renderAdmin();alert(wasEdit?"Mix actualizado.":"Mix publicado para todos los visitantes.")}catch(err){alert("No se pudo guardar: "+err.message)}finally{b.disabled=false;b.textContent=editingId?"GUARDAR CAMBIOS":"PUBLICAR MIX"}}
 function resetForm(){document.getElementById("mixForm").reset();editingId=null;document.getElementById("publishBtn").textContent="PUBLICAR MIX"}
-function renderAdmin(){
- if(!authenticated){openAdmin();return}
- const list=document.getElementById("adminList");document.getElementById("mixCount").textContent=mixes.length+" publicaciones";
- if(!mixes.length){list.innerHTML='<div class="empty">Aún no has publicado ningún mix.</div>';return}
- list.innerHTML=mixes.map(m=>`<div class="admin-item"><img class="admin-thumb" src="${escapeHtml(m.cover||DEFAULT_COVER)}" alt=""><div class="admin-info"><strong>${escapeHtml(m.title)}</strong><small>${escapeHtml(m.dj)} · <a style="color:#ff9b54" href="${escapeHtml(safeUrl(m.link))}" target="_blank" rel="noopener">Abrir enlace</a></small></div><button class="btn btn-muted" style="padding:8px 10px;font-size:12px" onclick="editMix(${Number(m.id)})">Editar</button><button class="btn-danger" onclick="deleteMix(${Number(m.id)})">Eliminar</button></div>`).join("");
-}
-function editMix(id){const m=mixes.find(x=>x.id===id);if(!m)return;editingId=id;document.getElementById("mixTitle").value=m.title;document.getElementById("djName").value=m.dj;document.getElementById("downloadLink").value=m.link;document.getElementById("publishBtn").textContent="GUARDAR CAMBIOS";window.scrollTo({top:0,behavior:"smooth"})}
-function deleteMix(id){if(!confirm("¿Eliminar este mix del catálogo de este navegador?"))return;mixes=mixes.filter(m=>m.id!==id);persist();renderAdmin();renderCatalog()}
-function exportBackup(){const blob=new Blob([JSON.stringify(mixes,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="nextmusicpty-respaldo.json";a.click();URL.revokeObjectURL(url)}
-function importBackup(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!Array.isArray(data)||!data.every(m=>m.title&&m.dj&&m.link))throw Error();if(!confirm("Esto reemplazará el catálogo actual de este navegador. ¿Continuar?"))return;mixes=data;if(persist()){renderAdmin();renderCatalog();alert("Respaldo importado.")}}catch(err){alert("El archivo no parece ser un respaldo válido de NEXTMUSICPTY.")}e.target.value=""};r.readAsText(file)}
-renderCatalog();
-if(location.hash==="#admin")openAdmin();
+async function renderAdmin(){if(!authenticated){openAdmin();return}const l=document.getElementById("adminList");l.innerHTML='<div class="empty">Cargando publicaciones...</div>';try{mixes=await api("/mixes");document.getElementById("mixCount").textContent=mixes.length+" publicaciones";if(!mixes.length){l.innerHTML='<div class="empty">Aún no has publicado ningún mix.</div>';return}l.innerHTML=mixes.map(m=>`<div class="admin-item"><img class="admin-thumb" src="${escapeHtml(m.cover||"")}" alt=""><div class="admin-info"><strong>${escapeHtml(m.title)}</strong><small>${escapeHtml(m.dj)} · <a style="color:#ff9b54" href="${escapeHtml(safeUrl(m.link))}" target="_blank" rel="noopener">Abrir enlace</a></small></div><button class="btn btn-muted" style="padding:8px 10px;font-size:12px" onclick="editMix(${Number(m.id)})">Editar</button><button class="btn-danger" onclick="deleteMix(${Number(m.id)})">Eliminar</button></div>`).join("")}catch(e){l.innerHTML='<div class="empty">Error: '+escapeHtml(e.message)+'</div>'}}
+function editMix(id){const m=mixes.find(x=>Number(x.id)===Number(id));if(!m)return;editingId=id;document.getElementById("mixTitle").value=m.title;document.getElementById("djName").value=m.dj;document.getElementById("downloadLink").value=m.link;document.getElementById("publishBtn").textContent="GUARDAR CAMBIOS";window.scrollTo({top:0,behavior:"smooth"})}
+async function deleteMix(id){if(!confirm("¿Eliminar este mix del catálogo público?"))return;try{await api("/mixes/"+id,{method:"DELETE"});await loadCatalog();await renderAdmin()}catch(e){alert("No se pudo eliminar: "+e.message)}}
+async function exportBackup(){try{const all=await api("/mixes"),blob=new Blob([JSON.stringify(all,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="nextmusicpty-respaldo.json";a.click();URL.revokeObjectURL(url)}catch(e){alert(e.message)}}
+function importBackup(){alert("La importación automática de respaldos no está habilitada en esta versión.")}
+loadCatalog();if(location.hash==="#admin")openAdmin();
+
 </script>
 </body>
 </html>
