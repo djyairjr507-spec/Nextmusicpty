@@ -4,7 +4,7 @@ name: Deploy NEXTMUSICPTY
 on:
   push:
     branches:
-      - principal
+      - main
 
 jobs:
   deploy:
