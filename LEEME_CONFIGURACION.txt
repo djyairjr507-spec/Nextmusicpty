@@ -1,0 +1,31 @@
+NEXTMUSICPTY — CATÁLOGO COMPARTIDO PARA CLOUDFLARE PAGES
+
+IMPORTANTE ANTES DE CAMBIAR LA WEB:
+1. Desde el teléfono donde todavía ves tus mixes, descarga el respaldo JSON desde el panel antiguo si está disponible.
+2. Guarda también los archivos originales de las portadas.
+3. No borres la versión anterior hasta comprobar el nuevo sitio.
+
+CONFIGURACIÓN EN CLOUDFLARE:
+1. Crea una base D1 llamada nextmusicpty-db.
+2. En D1 > Console, ejecuta el contenido de schema.sql.
+3. Crea un bucket R2 llamado nextmusicpty-covers.
+4. En el proyecto Pages nextmusicpty > Settings > Functions > Bindings:
+   - D1 binding: variable DB, selecciona nextmusicpty-db.
+   - R2 binding: variable COVERS, selecciona nextmusicpty-covers.
+5. En Settings > Variables and Secrets agrega como secretos:
+   - ADMIN_PASSWORD: introduce tu contraseña de administrador (la que elegiste: hombrelobo09).
+   - AUTH_SECRET: una clave aleatoria larga de al menos 40 caracteres. No la compartas.
+6. Sube index.html, la carpeta functions, schema.sql y wrangler.toml a la raíz del repositorio GitHub conectado a Pages, rama main.
+7. En Pages > Settings > Builds & deployments configura el directorio de salida como . (raíz) y vuelve a desplegar.
+
+ADMINISTRADOR:
+Haz doble clic en el logo NEXTMUSICPTY. El enlace de administración no aparece como botón público. La contraseña se verifica en el servidor y no está escrita en el HTML. La sesión dura 8 horas.
+
+FUNCIONES:
+- El catálogo público consulta D1; todos ven los mismos mixes.
+- Las portadas se guardan en R2.
+- Los enlaces de descarga siguen siendo externos; no hay reproductor integrado.
+- El administrador puede publicar, editar y eliminar.
+
+MIGRACIÓN:
+Los datos que estaban en localStorage no se pasan automáticamente. Tras el despliegue hay que volver a publicar los mixes desde el respaldo guardado en el teléfono. Las portadas embebidas en el respaldo antiguo deberán volver a seleccionarse como archivos al publicar.
