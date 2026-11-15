@@ -1,31 +1,43 @@
-NEXTMUSICPTY — CATÁLOGO COMPARTIDO PARA CLOUDFLARE PAGES
+NEXTMUSICPTY — PROYECTO CON CATÁLOGO COMPARTIDO
 
-IMPORTANTE ANTES DE CAMBIAR LA WEB:
-1. Desde el teléfono donde todavía ves tus mixes, descarga el respaldo JSON desde el panel antiguo si está disponible.
-2. Guarda también los archivos originales de las portadas.
-3. No borres la versión anterior hasta comprobar el nuevo sitio.
+ESTA VERSIÓN INCLUYE:
+- Página pública conectada a la API /api/mixes.
+- Panel privado al hacer doble clic en el logo NEXTMUSICPTY.
+- Contraseña validada en el servidor (no está escrita en index.html).
+- Catálogo compartido usando Cloudflare D1.
+- Portadas guardadas en Cloudflare R2.
+- Enlaces externos de descarga; no incluye reproductor integrado.
+- Crear, editar y eliminar publicaciones.
+- Respaldo JSON para descargar la lista de mixes.
+- Las eliminaciones del catálogo NO borran archivos de R2.
 
-CONFIGURACIÓN EN CLOUDFLARE:
-1. Crea una base D1 llamada nextmusicpty-db.
-2. En D1 > Console, ejecuta el contenido de schema.sql.
-3. Crea un bucket R2 llamado nextmusicpty-covers.
-4. En el proyecto Pages nextmusicpty > Settings > Functions > Bindings:
-   - D1 binding: variable DB, selecciona nextmusicpty-db.
-   - R2 binding: variable COVERS, selecciona nextmusicpty-covers.
-5. En Settings > Variables and Secrets agrega como secretos:
-   - ADMIN_PASSWORD: introduce tu contraseña de administrador (la que elegiste: hombrelobo09).
-   - AUTH_SECRET: una clave aleatoria larga de al menos 40 caracteres. No la compartas.
-6. Sube index.html, la carpeta functions, schema.sql y wrangler.toml a la raíz del repositorio GitHub conectado a Pages, rama main.
-7. En Pages > Settings > Builds & deployments configura el directorio de salida como . (raíz) y vuelve a desplegar.
+IMPORTANTE: conservar los recursos existentes.
+No borres el proyecto Pages, la base D1 ni el bucket R2. Este ZIP reemplaza los archivos del código, no el contenido de tu almacenamiento.
+
+CONFIGURACIÓN QUE DEBE EXISTIR EN CLOUDFLARE PAGES (proyecto nextmusicpty):
+- D1 binding: variable DB, base de datos nextmusicpty-db.
+- R2 binding: variable COVERS, bucket nextmusicpty-mixes.
+- Secret ADMIN_PASSWORD: la contraseña que tú elegiste.
+- Secret AUTH_SECRET: una clave aleatoria larga (40+ caracteres).
+No compartas estos secretos en el chat ni los pongas dentro del HTML.
+
+BASE DE DATOS:
+El archivo schema.sql crea la tabla mixes si todavía no existe. Si ya ejecutaste este mismo esquema, no hace falta borrar ni recrear la base de datos. No uses DROP TABLE.
+
+PUBLICACIÓN:
+Tu flujo de GitHub Actions publica la rama main en el proyecto Pages nextmusicpty mediante Wrangler. Sube/reemplaza en la raíz del repositorio:
+- index.html
+- schema.sql
+- functions/api/[[path]].js
+- .github/workflows/pages-deployment.yml
+
+La carpeta functions es necesaria para que Cloudflare Pages ejecute la API. No la cambies de nombre ni la coloques dentro de otra carpeta.
 
 ADMINISTRADOR:
-Haz doble clic en el logo NEXTMUSICPTY. El enlace de administración no aparece como botón público. La contraseña se verifica en el servidor y no está escrita en el HTML. La sesión dura 8 horas.
+Abre https://nextmusicpty.pages.dev y haz doble clic en el logo NEXTMUSICPTY. Ingresa tu contraseña. La sesión dura 8 horas.
 
-FUNCIONES:
-- El catálogo público consulta D1; todos ven los mismos mixes.
-- Las portadas se guardan en R2.
-- Los enlaces de descarga siguen siendo externos; no hay reproductor integrado.
-- El administrador puede publicar, editar y eliminar.
+MIGRACIÓN DE MIXES ANTERIORES:
+Los mixes que solo estaban guardados en localStorage de un teléfono no se trasladan automáticamente. Antes de abandonar la versión vieja, descarga el respaldo JSON y conserva tus enlaces y portadas. Luego vuelve a publicar los mixes desde el panel nuevo. Los objetos que ya existan en R2 no se eliminan ni se sobrescriben por este despliegue.
 
-MIGRACIÓN:
-Los datos que estaban en localStorage no se pasan automáticamente. Tras el despliegue hay que volver a publicar los mixes desde el respaldo guardado en el teléfono. Las portadas embebidas en el respaldo antiguo deberán volver a seleccionarse como archivos al publicar.
+COMPROBACIÓN:
+Después del despliegue, abre https://nextmusicpty.pages.dev/api/mixes. Debe mostrar [] si la tabla está vacía, o una lista JSON si ya hay registros. Si aparece un error de bindings, revisa DB y COVERS en Pages > Settings > Functions > Bindings.
